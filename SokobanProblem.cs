@@ -231,5 +231,17 @@ public class SokobanProblem : ISearchProblem {
 
 		return true;
 	}
+
+	public int getRemainingCrates(object state){
+			SokobanState s = (SokobanState)state;
+			int remainingGoals = goals.Count;
+
+			foreach (Vector2 crate in s.crates) {
+				if (goals.Contains (crate)) {
+					remainingGoals--;
+				}
+			}
+		return remainingGoals;
+	}
 }
 
