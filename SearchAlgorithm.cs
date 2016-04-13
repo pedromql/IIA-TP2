@@ -7,6 +7,7 @@ public class SearchNode
 	public object state;
 	public float g;
 	public float f;
+	public float h;
 	public Action action;
 	public SearchNode parent;
 	public int depth;
@@ -30,6 +31,7 @@ public class SearchNode
 		this.state = state;
 		this.g = g;
 		this.f = g + h;
+		this.h = h;
 		this.action = action;
 		this.parent = parent;
 		if (parent != null) {
