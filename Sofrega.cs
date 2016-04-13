@@ -7,13 +7,13 @@ public class Sofrega : SearchAlgorithm {
 	private List<SearchNode> openList = new List<SearchNode> ();
 	private HashSet<object> closedSet = new HashSet<object> ();
 	public int heuristica;
-	public int limite=10;
+
 	void Start () 
 	{
 		problem = GameObject.Find ("Map").GetComponent<Map> ().GetProblem();
 		SearchNode start = new SearchNode (problem.GetStartState (), 0);
 		openList.Add (start);
-		insertionSort ();
+
 	}
 
 	protected override void Step()
@@ -31,7 +31,7 @@ public class Sofrega : SearchAlgorithm {
 				finished = true;
 				running = false;
 			} else {
-				if (cur_node.depth < limite) {
+				
 					Successor[] sucessors = problem.GetSuccessors (cur_node.state);
 					foreach (Successor suc in sucessors) {
 						if (!closedSet.Contains (suc.state)) {
@@ -40,7 +40,8 @@ public class Sofrega : SearchAlgorithm {
 							openList.Add (new_node);
 						}
 					}
-				}
+				openList.Sort ((x,y) => x.h.CompareTo(y.h));
+
 			}
 		}
 		else
@@ -52,25 +53,25 @@ public class Sofrega : SearchAlgorithm {
 
 	}
 
-	private List<SearchNode> insertionSort(){
-		if (openList.Count == 1) {
-			return openList;
-		}
-		for (int i = 0; i < openList.Count-1; i++)
-		{
-			int h = i+1;
-			while (h>0)
-			{
-				if (openList[h-1].f > openList[h].f)
-				{
-					SearchNode temp = openList[h-1];
-					openList[h - 1] = openList[h];
-					openList[h] = temp;
-				}
-				h--;
-			}
-		}
-		return openList;
-	}
+//	private List<SearchNode> insertionSort(){
+//		if (openList.Count == 1) {
+//			return openList;
+//		}
+//		for (int i = 0; i < openList.Count-1; i++)
+//		{
+//			int h = i+1;
+//			while (h>0)
+//			{
+//				if (openList[h-1].f > openList[h].f)
+//				{
+//					SearchNode temp = openList[h-1];
+//					openList[h - 1] = openList[h];
+//					openList[h] = temp;
+//				}
+//				h--;
+//			}
+//		}
+//		return openList;
+//	}
 
 }
