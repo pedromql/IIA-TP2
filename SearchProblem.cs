@@ -23,6 +23,7 @@ public interface ISearchProblem
 	object GetStartState ();
 	bool IsGoal (object state);
 	Successor[] GetSuccessors (object state);
+	int getRemainingCrates (object state);
 
 	int GetVisited ();
 	int GetExpanded ();
