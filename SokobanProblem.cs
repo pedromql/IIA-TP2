@@ -229,10 +229,11 @@ public class SokobanProblem : ISearchProblem {
 			}
 		}
 
+
 		return true;
 	}
 
-	public int getRemainingCrates(object state){
+	public int getRemainingGoals(object state){
 			SokobanState s = (SokobanState)state;
 			int remainingGoals = goals.Count;
 
@@ -243,5 +244,75 @@ public class SokobanProblem : ISearchProblem {
 			}
 		return remainingGoals;
 	}
+
+	public float getMinimumDistance(object state) {
+		SokobanState new_state = (SokobanState)state;
+		float min_dist = float.MaxValue;
+		//Debug.Log ("Num crates = " + new_state.crates.Count);
+
+		for (int i = 0; i < new_state.crates.Count; i++) {
+			if (goals.Contains (new_state.crates [i])) {
+				//nothing to do here
+			} else {
+				float dist = (new_state.crates [i] - new_state.player).magnitude;
+				if (dist < min_dist)
+					min_dist = dist;
+			}
+		}
+		//Debug.Log("Min_Dist = " + min_dist);
+		return min_dist;
+	}
+
+	public float getManhattanDistance(object state) {
+		SokobanState new_state = (SokobanState)state;
+		float min_dist = float.MaxValue;
+
+		for (int i = 0; i < new_state.crates.Count; i++) {
+			if (goals.Contains (new_state.crates [i])) {
+				//nothing to do here
+			} else {
+				float dist = Mathf.Abs (new_state.crates [i].x - new_state.player.x) + Mathf.Abs (new_state.crates [i].y - new_state.player.y);
+				if (dist < min_dist)
+					min_dist = dist;
+			}
+		}
+		//Debug.Log ("Min_Dist = " + min_dist);
+		return min_dist;
+	}
+
+	public float getCrateToGoalDistance(object state) {
+		SokobanState new_state = (SokobanState)state;
+		float min_dist = float.MaxValue;
+		Vector2 closestCrate = Vector2.zero;
+
+		for (int i = 0; i < new_state.crates.Count; i++) {
+			if (goals.Contains (new_state.crates [i])) {
+				//nothing to do here
+			} else {
+				if (closestCrate == Vector2.zero)
+					closestCrate = new_state.crates [i];
+				else {
+					if ((new_state.crates [i] - new_state.player).magnitude < (closestCrate - new_state.player).magnitude) {
+						closestCrate = new_state.crates [i];
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < goals.Count; i++) {
+			if (new_state.crates.Contains (goals [i])) {
+				//nothing to do here
+			} else {
+				float dist = (closestCrate - goals [i]).magnitude;
+				if (dist < min_dist)
+					min_dist = dist;
+			}
+		}
+		//Debug.Log ("Min_Dist = " + min_dist);
+		return min_dist;
+	}
+				
+
+
 }
 

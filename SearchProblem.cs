@@ -23,7 +23,10 @@ public interface ISearchProblem
 	object GetStartState ();
 	bool IsGoal (object state);
 	Successor[] GetSuccessors (object state);
-	int getRemainingCrates (object state);
+	int getRemainingGoals (object state);
+	float getMinimumDistance (object state);
+	float getManhattanDistance (object state);
+	float getCrateToGoalDistance (object state);
 
 	int GetVisited ();
 	int GetExpanded ();
