@@ -45,7 +45,7 @@ public class SearchNode
 
 public abstract class SearchAlgorithm : MonoBehaviour {
 
-	public int stepsPerFrame = 10;
+	public int stepsPerFrame = 100;
 	[HideInInspector]public ISearchProblem problem;
 
 	protected bool running = false;

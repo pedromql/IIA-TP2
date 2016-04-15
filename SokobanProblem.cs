@@ -291,7 +291,7 @@ public class SokobanProblem : ISearchProblem {
 					min_dist = dist;
 			}
 		}
-		Debug.Log ("Min_Dist = " + min_dist);
+		//Debug.Log ("Min_Dist = " + min_dist);
 		return min_dist;
 	}
 
@@ -448,7 +448,7 @@ public class SokobanProblem : ISearchProblem {
 			}
 			possibleActions += 1;
 		}
-		Debug.Log (possibleActions);
+		//Debug.Log (possibleActions);
 		return possibleActions;
 	}
 
