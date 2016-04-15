@@ -24,9 +24,14 @@ public interface ISearchProblem
 	bool IsGoal (object state);
 	Successor[] GetSuccessors (object state);
 	int getRemainingGoals (object state);
-	float getMinimumDistance (object state);
-	float getManhattanDistance (object state);
-	float getCrateToGoalDistance (object state);
+	float getPlayerToCratesMinimumDistance (object state);
+	float getPlayerToCratesSumDistance (object state);
+	float getPlayerToCratesMinimumManhattanDistance (object state);
+	float getPlayerToCratesSumManhattanDistance (object state);
+	float getClosestCrateToClosestGoalDistance (object state);
+	float getPlayerToClosestCrateToClosestGoalDistance (object state);
+	float getManhattanDistanceThomas (object state);
+	int Checkexpansion (object state);
 
 	int GetVisited ();
 	int GetExpanded ();

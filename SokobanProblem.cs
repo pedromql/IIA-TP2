@@ -245,7 +245,7 @@ public class SokobanProblem : ISearchProblem {
 		return remainingGoals;
 	}
 
-	public float getMinimumDistance(object state) {
+	public float getPlayerToCratesMinimumDistance(object state) {
 		SokobanState new_state = (SokobanState)state;
 		float min_dist = float.MaxValue;
 		//Debug.Log ("Num crates = " + new_state.crates.Count);
@@ -263,7 +263,22 @@ public class SokobanProblem : ISearchProblem {
 		return min_dist;
 	}
 
-	public float getManhattanDistance(object state) {
+	public float getPlayerToCratesSumDistance(object state) {
+		SokobanState new_state = (SokobanState)state;
+		float total_dist = 0;
+		//Debug.Log ("Num crates = " + new_state.crates.Count);
+		for (int i = 0; i < new_state.crates.Count; i++) {
+			if (goals.Contains (new_state.crates [i])) {
+				//nothing to do here
+			} else {
+				total_dist += (new_state.crates [i] - new_state.player).magnitude;
+			}
+		}
+		//Debug.Log("Min_Dist = " + min_dist);
+		return total_dist;
+	}
+
+	public float getPlayerToCratesMinimumManhattanDistance(object state) {
 		SokobanState new_state = (SokobanState)state;
 		float min_dist = float.MaxValue;
 
@@ -276,11 +291,27 @@ public class SokobanProblem : ISearchProblem {
 					min_dist = dist;
 			}
 		}
-		//Debug.Log ("Min_Dist = " + min_dist);
+		Debug.Log ("Min_Dist = " + min_dist);
 		return min_dist;
 	}
 
-	public float getCrateToGoalDistance(object state) {
+	public float getPlayerToCratesSumManhattanDistance(object state) {
+		SokobanState new_state = (SokobanState)state;
+		float total_dist = 0;
+
+		for (int i = 0; i < new_state.crates.Count; i++) {
+			if (goals.Contains (new_state.crates [i])) {
+				//nothing to do here
+			} else {
+				total_dist += Mathf.Abs (new_state.crates [i].x - new_state.player.x) + Mathf.Abs (new_state.crates [i].y - new_state.player.y);
+
+			}
+		}
+		//Debug.Log ("Min_Dist = " + min_dist);
+		return total_dist;
+	}
+
+	public float getClosestCrateToClosestGoalDistance(object state) {
 		SokobanState new_state = (SokobanState)state;
 		float min_dist = float.MaxValue;
 		Vector2 closestCrate = Vector2.zero;
@@ -311,8 +342,115 @@ public class SokobanProblem : ISearchProblem {
 		//Debug.Log ("Min_Dist = " + min_dist);
 		return min_dist;
 	}
-				
 
+	public float getPlayerToClosestCrateToClosestGoalDistance(object state) {
+		SokobanState new_state = (SokobanState)state;
+		float min_dist = float.MaxValue;
+		Vector2 closestCrate = Vector2.zero;
+
+		for (int i = 0; i < new_state.crates.Count; i++) {
+			if (goals.Contains (new_state.crates [i])) {
+				//nothing to do here
+			} else {
+				if (closestCrate == Vector2.zero)
+					closestCrate = new_state.crates [i];
+				else {
+					if ((new_state.crates [i] - new_state.player).magnitude < (closestCrate - new_state.player).magnitude) {
+						closestCrate = new_state.crates [i];
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < goals.Count; i++) {
+			if (new_state.crates.Contains (goals [i])) {
+				//nothing to do here
+			} else {
+				float dist = (closestCrate - goals [i]).magnitude;
+				if (dist < min_dist)
+					min_dist = dist;
+			}
+		}
+		min_dist += (closestCrate - new_state.player).magnitude;
+		//Debug.Log ("Min_Dist = " + min_dist);
+		return min_dist;
+	}
+				
+	public List<Vector2> getRemainingGoalsCoordinates(object state) {
+		SokobanState s = (SokobanState)state;
+
+		List<Vector2> result = new List<Vector2>();
+		foreach(Vector2 goal in goals ) {
+			if(!s.crates.Contains(goal)) {
+				result.Add(goal);
+			}
+		}
+		return result;
+	}
+
+	public List<Vector2> getRemainingCratesCoordinates(object state) {
+		SokobanState s = (SokobanState)state;
+		List<Vector2> result = new List<Vector2>();
+		foreach (Vector2 crate in s.crates) {
+			if (!goals.Contains (crate)) {
+				result.Add(crate);
+			}
+		}
+		return result;
+	}
+
+	public float getManhattanDistanceThomas(object state) {
+		List<Vector2> remainingCrates = getRemainingCratesCoordinates(state);
+		List<Vector2> remainingGoals = getRemainingGoalsCoordinates(state);
+		if (remainingCrates.Count == 0 || remainingGoals.Count == 0) {
+			return 0;
+		}
+		float total = 0, crateBest = 0, manhattan = 0;
+		foreach(Vector2 crate in remainingCrates) {
+			crateBest = 0;
+			foreach(Vector2 goal in remainingGoals) {
+				manhattan = Mathf.Abs(crate.x-goal.x) + Mathf.Abs(crate.y-goal.y);
+				if(crateBest == 0 || crateBest > manhattan )
+					crateBest = manhattan;
+			}
+			total = total + crateBest;
+		}
+		return total;
+	}
+
+	//heuristica de expansão de nós 
+	public int Checkexpansion(object state){
+		SokobanState s = (SokobanState)state;
+
+		Action[] allActions = Actions.GetAll();
+		int possibleActions = 0;
+		foreach (Action a in allActions) {
+			Vector2 movement = Actions.GetVector (a);
+			Vector2 new_pos = s.player + movement;
+
+			// Move to wall?
+			if (walls [(int)new_pos.y, (int)new_pos.x]) {
+				break;
+			}
+
+			// Crate in front and able to move?
+			int index = s.crates.IndexOf (new_pos);
+			if (index != -1) {
+				Vector2 new_crate_pos = s.crates [index] + movement;
+
+				if (walls [(int)new_crate_pos.y, (int)new_crate_pos.x]) {
+					break;
+				}
+
+				if (s.crates.Contains (new_crate_pos)) {
+					break;
+				}
+			}
+			possibleActions += 1;
+		}
+		Debug.Log (possibleActions);
+		return possibleActions;
+	}
 
 }
 
