@@ -7,6 +7,7 @@ public class AAsterisco : SearchAlgorithm {
 	private List<SearchNode> openList = new List<SearchNode> ();
 	private HashSet<object> closedSet = new HashSet<object> ();
 	public int heuristica = 1;
+	public int sort = 1;
 	private float h;
 
 	void Start () 
@@ -41,13 +42,28 @@ public class AAsterisco : SearchAlgorithm {
 							h = problem.getRemainingGoals (suc.state);
 							break;
 						case 2:
-							h = problem.getMinimumDistance (suc.state);
+							h = problem.getPlayerToCratesMinimumDistance (suc.state);
 							break;
 						case 3:
-							h = problem.getManhattanDistance (suc.state);
+							h = problem.getPlayerToCratesMinimumManhattanDistance (suc.state);
 							break;
 						case 4:
-							h = problem.getCrateToGoalDistance (suc.state);
+							h = problem.getClosestCrateToClosestGoalDistance (suc.state);
+							break;
+						case 5:
+							h = problem.getPlayerToClosestCrateToClosestGoalDistance (suc.state);
+							break;
+						case 6:
+							h = problem.getManhattanDistanceThomas (suc.state);
+							break;
+						case 7:
+							h = problem.getPlayerToCratesSumDistance(suc.state);
+							break;
+						case 8:
+							h = problem.getPlayerToCratesSumManhattanDistance (suc.state);
+							break;
+						case 9:
+							h = problem.Checkexpansion (suc.state);
 							break;
 						default:
 							h = problem.getRemainingGoals (suc.state);
@@ -55,11 +71,11 @@ public class AAsterisco : SearchAlgorithm {
 						}
 						SearchNode new_node = new SearchNode (suc.state, suc.cost + cur_node.g, h, suc.action, cur_node);
 						openList.Add (new_node);
-						insertionSort ();
+						if (sort == 1) insertionSort ();
 					}
 				}
 				//sort f
-				//openList.Sort ((x, y) => x.f.CompareTo (y.f));
+				if (sort != 1) openList.Sort ((x, y) => x.f.CompareTo (y.f));
 
 			}
 		}
