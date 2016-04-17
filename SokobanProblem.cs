@@ -377,11 +377,11 @@ public class SokobanProblem : ISearchProblem {
 	}
 				
 	public List<Vector2> getRemainingGoalsCoordinates(object state) {
-		SokobanState s = (SokobanState)state;
+		SokobanState new_state = (SokobanState)state;
 
 		List<Vector2> result = new List<Vector2>();
 		foreach(Vector2 goal in goals ) {
-			if(!s.crates.Contains(goal)) {
+			if(!new_state.crates.Contains(goal)) {
 				result.Add(goal);
 			}
 		}
@@ -389,9 +389,9 @@ public class SokobanProblem : ISearchProblem {
 	}
 
 	public List<Vector2> getRemainingCratesCoordinates(object state) {
-		SokobanState s = (SokobanState)state;
+		SokobanState new_state = (SokobanState)state;
 		List<Vector2> result = new List<Vector2>();
-		foreach (Vector2 crate in s.crates) {
+		foreach (Vector2 crate in new_state.crates) {
 			if (!goals.Contains (crate)) {
 				result.Add(crate);
 			}
@@ -399,21 +399,21 @@ public class SokobanProblem : ISearchProblem {
 		return result;
 	}
 
-	public float getManhattanDistanceThomas(object state) {
+	public float getCratesToGoalsManhattanDistance(object state) {
 		List<Vector2> remainingCrates = getRemainingCratesCoordinates(state);
 		List<Vector2> remainingGoals = getRemainingGoalsCoordinates(state);
 		if (remainingCrates.Count == 0 || remainingGoals.Count == 0) {
 			return 0;
 		}
-		float total = 0, crateBest = 0, manhattan = 0;
+		float total = 0, crate_min = 0, manhattan = 0;
 		foreach(Vector2 crate in remainingCrates) {
-			crateBest = 0;
+			crate_min = 0;
 			foreach(Vector2 goal in remainingGoals) {
 				manhattan = Mathf.Abs(crate.x-goal.x) + Mathf.Abs(crate.y-goal.y);
-				if(crateBest == 0 || crateBest > manhattan )
-					crateBest = manhattan;
+				if(crate_min == 0 || crate_min > manhattan )
+					crate_min = manhattan;
 			}
-			total = total + crateBest;
+			total = total + crate_min;
 		}
 		return total;
 	}

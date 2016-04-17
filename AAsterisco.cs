@@ -54,7 +54,7 @@ public class AAsterisco : SearchAlgorithm {
 							h = problem.getPlayerToClosestCrateToClosestGoalDistance (suc.state);
 							break;
 						case 6:
-							h = problem.getManhattanDistanceThomas (suc.state);
+							h = problem.getCratesToGoalsManhattanDistance (suc.state);
 							break;
 						case 7:
 							h = problem.getPlayerToCratesSumDistance(suc.state);

@@ -30,7 +30,7 @@ public interface ISearchProblem
 	float getPlayerToCratesSumManhattanDistance (object state);
 	float getClosestCrateToClosestGoalDistance (object state);
 	float getPlayerToClosestCrateToClosestGoalDistance (object state);
-	float getManhattanDistanceThomas (object state);
+	float getCratesToGoalsManhattanDistance (object state);
 	int Checkexpansion (object state);
 
 	int GetVisited ();
